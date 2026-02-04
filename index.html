@@ -904,6 +904,11 @@
 
             updateCartCount();
             
+            // Reset quantity to 1 after adding
+            qtyInput.value = 1;
+            
+            // NO borramos el diseño seleccionado - se mantiene resaltado
+            
             const btn = event.target;
             const originalText = btn.textContent;
             const originalBg = btn.style.background;
