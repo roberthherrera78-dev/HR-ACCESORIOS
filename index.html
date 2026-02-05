@@ -1,1066 +1,192 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaseMania - Tienda de Cases</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #FF6B35;
-            --secondary: #004E89;
-            --accent: #F7B801;
-            --dark: #1A1A2E;
-            --light: #F8F9FA;
-            --success: #06D6A0;
-        }
-
-        body {
-            font-family: 'Syne', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--dark);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            animation: slideDown 0.5s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5em;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -1px;
-        }
-
-        .cart-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.1em;
-            cursor: pointer;
-            font-weight: 700;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .cart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
-        }
-
-        .cart-btn:active {
-            transform: scale(0.95);
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: var(--accent);
-            color: var(--dark);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 0.9em;
-            border: 3px solid white;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Search Bar */
-        .search-section {
-            margin: 30px 0;
-            animation: fadeIn 0.8s ease-out 0.3s both;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .search-bar {
-            display: flex;
-            gap: 15px;
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        }
-
-        .search-bar input, .search-bar select {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            font-size: 1em;
-            font-family: 'Syne', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar input:focus, .search-bar select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
-
-        /* Category Tabs */
-        .category-tabs {
-            display: flex;
-            gap: 15px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-            animation: fadeIn 0.8s ease-out 0.5s both;
-        }
-
-        .category-tab {
-            background: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            color: var(--dark);
-        }
-
-        .category-tab:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .category-tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
-        }
-
-        /* Product Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            animation: scaleIn 0.5s ease-out both;
-            animation-delay: calc(var(--i) * 0.05s);
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
-
-        .product-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-        }
-
-        .product-brand {
-            background: var(--secondary);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .product-category {
-            font-size: 0.75em;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .product-model {
-            font-size: 1.3em;
-            font-weight: 700;
-            margin: 10px 0;
-            color: var(--dark);
-        }
-
-        .designs-section {
-            margin: 15px 0;
-        }
-
-        .designs-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .designs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 8px;
-        }
-
-        .design-option {
-            background: #F0F0F0;
-            border: 2px solid transparent;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.85em;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .design-option:hover {
-            background: #E0E0E0;
-            transform: scale(1.05);
-        }
-
-        .design-option.selected {
-            background: var(--accent);
-            border-color: var(--primary);
-            color: var(--dark);
-        }
-
-        .quantity-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 15px 0;
-        }
-
-        .quantity-label {
-            font-weight: 600;
-            color: #666;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #F0F0F0;
-            border-radius: 10px;
-            padding: 5px;
-        }
-
-        .qty-btn {
-            background: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-
-        .qty-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .qty-input {
-            width: 50px;
-            text-align: center;
-            border: none;
-            background: transparent;
-            font-weight: 700;
-            font-size: 1.1em;
-        }
-
-        .add-to-cart-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary), #FF8C5A);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .add-to-cart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
-        }
-
-        .add-to-cart-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 25px;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            width: 90%;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .modal-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2em;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 2em;
-            cursor: pointer;
-            color: #666;
-            transition: all 0.2s ease;
-        }
-
-        .close-btn:hover {
-            color: var(--primary);
-            transform: rotate(90deg);
-        }
-
-        .cart-items {
-            margin: 20px 0;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: #F8F9FA;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            transition: all 0.2s ease;
-        }
-
-        .cart-item:hover {
-            background: #E9ECEF;
-        }
-
-        .cart-item-info {
-            flex: 1;
-        }
-
-        .cart-item-brand {
-            font-weight: 700;
-            color: var(--secondary);
-        }
-
-        .cart-item-model {
-            font-size: 1.1em;
-            margin: 5px 0;
-        }
-
-        .cart-item-design {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .cart-item-qty {
-            font-weight: 700;
-            font-size: 1.2em;
-            color: var(--primary);
-            margin: 0 20px;
-        }
-
-        .remove-btn {
-            background: #DC3545;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .remove-btn:hover {
-            background: #C82333;
-            transform: scale(1.05);
-        }
-
-        .cart-summary {
-            background: linear-gradient(135deg, var(--secondary), #006BB3);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin: 25px 0;
-        }
-
-        .cart-total {
-            font-size: 1.5em;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .customer-form {
-            margin: 30px 0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #E0E0E0;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: 'Syne', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 1.2em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .checkout-btn:hover {
-            background: #05C090;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(6, 214, 160, 0.4);
-        }
-
-        .checkout-btn:disabled {
-            background: #CCC;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-cart-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        /* Success Message */
-        .success-message {
-            background: var(--success);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            text-align: center;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .order-summary {
-            background: #F8F9FA;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-
-        .order-summary h3 {
-            margin-bottom: 15px;
-            color: var(--secondary);
-        }
-
-        .order-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #E0E0E0;
-        }
-
-        .order-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .search-bar {
-                flex-direction: column;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                padding: 25px;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                align-items: start;
-                gap: 10px;
-            }
-
-            .cart-item-qty {
-                margin: 10px 0;
-            }
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 20px;
-            margin: 30px 0;
-        }
-
-        .no-results-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .no-results h3 {
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-
-        .no-results p {
-            color: #666;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR ACCESORIOS - Sistema de Ventas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#1B4965;
+  --primary-light:#5FA8D3;
+  --accent:#F28C28;
+  --dark:#2C3E50;
+  --gray:#7F8C8D;
+  --gray-light:#ECF0F1;
+  --white:#FFFFFF;
+  --success:#27AE60;
+  --danger:#E74C3C;
+}
+body{font-family:'Inter',sans-serif;background:#F5F7FA;color:var(--dark);line-height:1.6}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+header{background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.08);position:sticky;top:0;z-index:1000;animation:slideDown .5s}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+.header-content{display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:0 auto;padding:16px 20px}
+h1{font-family:'Poppins',sans-serif;font-size:1.8em;color:var(--primary);font-weight:800;letter-spacing:-.5px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:10px;display:inline-flex;align-items:center;justify-content:center;color:var(--white);font-weight:800;font-size:1.2em;margin-right:12px;vertical-align:middle}
+.cart-btn{background:var(--accent);color:var(--white);border:none;padding:12px 24px;border-radius:12px;font-size:1em;cursor:pointer;font-weight:700;position:relative;transition:all .3s;min-width:140px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.cart-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(242,140,40,0.3)}
+.cart-count{position:absolute;top:-8px;right:-8px;background:var(--danger);color:var(--white);min-width:24px;height:24px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85em;padding:0 6px;border:2px solid var(--white);box-shadow:0 2px 6px rgba(0,0,0,0.2)}
+.search-section{margin:24px 0;animation:fadeIn .8s .3s both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.search-bar{display:flex;gap:12px;background:var(--white);padding:20px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.search-bar input,.search-bar select{flex:1;padding:14px 18px;border:2px solid var(--gray-light);border-radius:10px;font-size:.95em;font-family:'Inter',sans-serif;transition:all .3s;background:var(--white)}
+.search-bar input:focus,.search-bar select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(27,73,101,0.1)}
+.category-tabs{display:flex;gap:12px;margin:24px 0;flex-wrap:wrap;animation:fadeIn .8s .5s both}
+.category-tab{background:var(--white);border:2px solid var(--gray-light);padding:12px 24px;border-radius:12px;cursor:pointer;font-weight:600;font-size:.9em;transition:all .3s;color:var(--dark)}
+.category-tab:hover{border-color:var(--primary);transform:translateY(-2px)}
+.category-tab.active{background:var(--primary);color:var(--white);border-color:var(--primary);box-shadow:0 4px 12px rgba(27,73,101,0.3)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin:24px 0}
+.product-card{background:var(--white);border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all .3s;animation:scaleIn .5s both;animation-delay:calc(var(--i)*.05s);border:1px solid var(--gray-light)}
+@keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+.product-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:12px}
+.product-brand{background:var(--primary);color:var(--white);padding:6px 14px;border-radius:8px;font-size:.8em;font-weight:700;letter-spacing:.3px}
+.product-category{font-size:.7em;color:var(--gray);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-top:4px}
+.product-model{font-size:1.15em;font-weight:700;margin:8px 0;color:var(--dark)}
+.designs-section{margin:14px 0}
+.designs-label{font-size:.85em;color:var(--gray);margin-bottom:10px;font-weight:600}
+.designs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px}
+.design-option{background:var(--gray-light);border:2px solid transparent;padding:10px 6px;border-radius:8px;cursor:pointer;text-align:center;font-size:.8em;font-weight:600;transition:all .2s;color:var(--dark)}
+.design-option:hover{background:#DCE4E8;transform:scale(1.05)}
+.design-option.selected{background:var(--accent);border-color:var(--primary);color:var(--white);box-shadow:0 4px 12px rgba(242,140,40,0.3)}
+.quantity-section{display:flex;align-items:center;gap:12px;margin:14px 0}
+.quantity-label{font-weight:600;color:var(--gray);font-size:.9em}
+.quantity-controls{display:flex;align-items:center;gap:8px;background:var(--gray-light);border-radius:10px;padding:4px}
+.qty-btn{background:var(--white);border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.3em;font-weight:700;transition:all .2s;color:var(--primary)}
+.qty-btn:hover{background:var(--primary);color:var(--white)}
+.qty-input{width:50px;text-align:center;border:none;background:transparent;font-weight:700;font-size:1.05em;color:var(--dark)}
+.add-to-cart-btn{width:100%;background:var(--accent);color:var(--white);border:none;padding:14px;border-radius:10px;font-size:1em;font-weight:700;cursor:pointer;transition:all .3s;margin-top:14px}
+.add-to-cart-btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(242,140,40,0.3)}
+.add-to-cart-btn:active{transform:scale(.98)}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:2000;animation:fadeIn .3s}
+.modal.active{display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-content{background:var(--white);padding:32px;border-radius:20px;max-width:700px;max-height:90vh;overflow-y:auto;width:100%;animation:slideUp .4s}
+@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--gray-light)}
+.modal-title{font-family:'Poppins',sans-serif;font-size:1.8em;color:var(--primary);font-weight:700}
+.close-btn{background:none;border:none;font-size:2em;cursor:pointer;color:var(--gray);transition:all .2s;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px}
+.close-btn:hover{color:var(--danger);background:rgba(231,76,60,0.1);transform:rotate(90deg)}
+.cart-items{margin:16px 0}
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:16px;background:var(--gray-light);border-radius:12px;margin-bottom:12px;transition:all .2s}
+.cart-item:hover{background:#DCE4E8}
+.cart-item-info{flex:1}
+.cart-item-brand{font-weight:700;color:var(--primary);font-size:.9em}
+.cart-item-model{font-size:1.05em;margin:4px 0;font-weight:600}
+.cart-item-design{font-size:.85em;color:var(--gray)}
+.cart-item-qty{font-weight:700;font-size:1.15em;color:var(--accent);margin:0 16px;min-width:50px;text-align:center}
+.remove-btn{background:var(--danger);color:var(--white);border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600;transition:all .2s;font-size:.9em}
+.remove-btn:hover{background:#C0392B;transform:scale(1.05)}
+.cart-summary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--white);padding:20px;border-radius:12px;margin:20px 0}
+.cart-total{font-size:1.4em;font-weight:700;text-align:center}
+.customer-form{margin:24px 0}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--dark);font-size:.9em}
+.form-group input,.form-group textarea{width:100%;padding:12px 16px;border:2px solid var(--gray-light);border-radius:10px;font-size:.95em;font-family:'Inter',sans-serif;transition:all .3s;background:var(--white)}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(27,73,101,0.1)}
+.form-group textarea{resize:vertical;min-height:80px}
+.checkout-btn{width:100%;background:var(--success);color:var(--white);border:none;padding:16px;border-radius:10px;font-size:1.15em;font-weight:700;cursor:pointer;transition:all .3s}
+.checkout-btn:hover{background:#229954;transform:translateY(-2px);box-shadow:0 8px 16px rgba(39,174,96,0.3)}
+.checkout-btn:disabled{background:var(--gray);cursor:not-allowed;transform:none}
+.empty-cart{text-align:center;padding:60px 20px;color:var(--gray)}
+.empty-cart-icon{font-size:4em;margin-bottom:16px;opacity:.5}
+.success-message{background:var(--success);color:var(--white);padding:20px;border-radius:12px;margin:20px 0;text-align:center;animation:slideIn .5s}
+@keyframes slideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.order-summary{background:var(--gray-light);padding:20px;border-radius:12px;margin:20px 0}
+.order-summary h3{margin-bottom:12px;color:var(--primary);font-weight:700}
+.no-results{text-align:center;padding:60px 20px;background:var(--white);border-radius:16px;margin:24px 0;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.no-results-icon{font-size:4em;margin-bottom:16px;opacity:.3}
+.no-results h3{color:var(--dark);margin-bottom:8px;font-weight:700}
+.no-results p{color:var(--gray)}
+@media(max-width:768px){
+h1{font-size:1.4em}
+.header-content{padding:12px 16px}
+.logo-icon{width:36px;height:36px;font-size:1em;margin-right:8px}
+.cart-btn{padding:10px 20px;font-size:.9em;min-width:120px}
+.search-bar{flex-direction:column;padding:16px}
+.products-grid{grid-template-columns:1fr}
+.modal-content{padding:24px;margin:10px}
+.cart-item{flex-direction:column;align-items:start;gap:10px}
+.cart-item-qty{margin:8px 0}
+.designs-grid{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}
+.category-tabs{gap:8px}
+.category-tab{padding:10px 18px;font-size:.85em}
+}
+</style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1>🛍️ CaseMania</h1>
-            <button class="cart-btn" onclick="openCart()">
-                🛒 Carrito
-                <span class="cart-count" id="cartCount">0</span>
-            </button>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- Search Section -->
-        <div class="search-section">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="🔍 Buscar por modelo..." onkeyup="filterProducts()">
-                <select id="brandFilter" onchange="filterProducts()">
-                    <option value="">📱 Todas las marcas</option>
-                    <option value="SAMSUNG">Samsung</option>
-                    <option value="XIAOMI">Xiaomi</option>
-                    <option value="HONOR">Honor</option>
-                    <option value="IPHONE">iPhone</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Category Tabs -->
-        <div class="category-tabs" id="categoryTabs"></div>
-
-        <!-- Products Grid -->
-        <div class="products-grid" id="productsGrid"></div>
-
-        <!-- No Results Message -->
-        <div class="no-results" id="noResults" style="display: none;">
-            <div class="no-results-icon">😕</div>
-            <h3>No se encontraron productos</h3>
-            <p>Intenta con otra búsqueda o categoría</p>
-        </div>
-    </div>
-
-    <!-- Cart Modal -->
-    <div class="modal" id="cartModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">🛒 Mi Carrito</h2>
-                <button class="close-btn" onclick="closeCart()">×</button>
-            </div>
-            
-            <div id="cartContent"></div>
-        </div>
-    </div>
-
-    <script>
-        const CATALOG = {"360 MARIPOSA MUJER": [{"marca": "SAMSUNG", "modelo": "A06 4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A16", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A17/A26", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A23 4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A36/A56", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S22 ULTRA", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S23 ULTRA", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S24ULTRA/S25 ULTRA", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S25 FE", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "REDMI A5 4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "REDMI 14C /REDMI A4 5G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "NOTE 10 PRO  4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "NOTE 11 PRO 2022", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "NOTE 12 PRO", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "NOTE 13 PRO", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "POCO X6 PRO", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X5B/X5B PLUS", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X6A PLUS", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X6B 4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X6C", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X7A", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X7B", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X7C", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X8A", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X8B", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X9B", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X9C", "designs": ["1", "2", "3", "4", "5", "6"]}], "360 MUJER": [{"marca": "SAMSUNG", "modelo": "A06 4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A07", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A11", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A12", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A14", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A15 4G/5G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A16", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A17/A26", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A25", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A35", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A36/A56", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "A55", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S23 FE", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S24 FE", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "SAMSUNG", "modelo": "S25 FE", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X5B/X5B PLUS", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X6A PLUS", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X6B 4G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X6C", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X7A", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X7B", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X7C", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X8A", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X8B", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X9B", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "HONOR", "modelo": "X9C", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "NOTE 13 PRO 5G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "REDMI 14C", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "REDMI A4 5G", "designs": ["1", "2", "3", "4", "5", "6"]}, {"marca": "XIAOMI", "modelo": "REDMI A5 4G", "designs": ["1", "2", "3", "4", "5", "6"]}], "360 HOMBRE": [{"marca": "SAMSUNG", "modelo": "A06 4G", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A07", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A11", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A12", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A14", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A15 4G/5G", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A16", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A17/A26", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A25", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A35", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A36/A56", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "A55", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "S23 FE", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "S24 FE", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "SAMSUNG", "modelo": "S25 FE", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "XIAOMI", "modelo": "NOTE 13 PRO 5G", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "XIAOMI", "modelo": "REDMI 14C", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "XIAOMI", "modelo": "REDMI A4 5G", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "XIAOMI", "modelo": "REDMI A5 4G", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X5B", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X6A", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X6A PLUS", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X6B 4G", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X6C", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X7A", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X7B", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X7C", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X8A", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X8B", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X9B", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X9C", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "200", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "200 PRO", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "X50", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "90", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "90 LITE", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}, {"marca": "HONOR", "modelo": "MAGIC 5 LITE", "designs": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}], "MAGSAFE": [{"marca": "SAMSUNG", "modelo": "S24", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "SAMSUNG", "modelo": "S24 FE", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "SAMSUNG", "modelo": "S24 PLUS", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "SAMSUNG", "modelo": "S25", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "SAMSUNG", "modelo": "S25 PLUS", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "SAMSUNG", "modelo": "S24 ULTRA S/M", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "SAMSUNG", "modelo": "S25 ULTRA S/M", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 11", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 11 PRO MAX", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 12 PRO MAX", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 13 PRO MAX", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 13 PRO S/M", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 14 PRO S/M", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 14 PRO MAX", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 15/14/13", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 15 PRO MAX", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 16 S/M", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 16 PRO", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 16 PLUS", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 16 PRO MAX", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 15 PLUS", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 15 PRO", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}, {"marca": "IPHONE", "modelo": "IPH 14 PLUS", "designs": ["NEGRO", "AZUL", "MORADO", "MARRON", "ROSADO", "VERDE", "GRIS", "CELESTE", "NARANJA", "BLANCO"]}], "SILICONE ": [{"marca": "SAMSUNG", "modelo": "A07", "designs": ["1", "2", "3", "4"]}, {"marca": "SAMSUNG", "modelo": "A17", "designs": ["1", "2", "3", "4"]}, {"marca": "SAMSUNG", "modelo": "A26", "designs": ["1", "2", "3", "4"]}, {"marca": "SAMSUNG", "modelo": "A55", "designs": ["1", "2", "3", "4"]}, {"marca": "SAMSUNG", "modelo": "A36/A56", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X5B", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X6", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X6A", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X6B 4G", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X6C", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X7A", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X7B", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X7C", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X8A", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X8B", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X9B", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X9C", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "200", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "200 PRO", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "200 LITE", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "X50", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "90", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "90 LITE", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "MAGIC 5 LITE", "designs": ["1", "2", "3", "4"]}, {"marca": "HONOR", "modelo": "MAGIC 6 LITE", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "NOTE 14 PRO", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "NOTE 14 PRO PLUS", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "NOTE 13 PRO 5G", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "REDMI A5 4G", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "REDMI A4 5G", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "REDMI 14C", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "POCO M6", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "POCO M6 PRO", "designs": ["1", "2", "3", "4"]}, {"marca": "XIAOMI", "modelo": "POCO X6 PRO", "designs": ["1", "2", "3", "4"]}]};
-
-        let currentCategory = 'Todos';
-        let cart = [];
-        let selectedDesigns = {};
-
-        function init() {
-            renderCategoryTabs();
-            renderProducts();
-            updateCartCount();
-        }
-
-        function renderCategoryTabs() {
-            const tabsContainer = document.getElementById('categoryTabs');
-            const categories = ['Todos', ...Object.keys(CATALOG)];
-            
-            tabsContainer.innerHTML = categories.map(cat => 
-                '<button class="category-tab ' + (cat === currentCategory ? 'active' : '') + '" onclick="selectCategory(\'' + cat + '\')">' + cat + '</button>'
-            ).join('');
-        }
-
-        function selectCategory(category) {
-            currentCategory = category;
-            renderCategoryTabs();
-            filterProducts();
-        }
-
-        function filterProducts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const brandFilter = document.getElementById('brandFilter').value;
-            renderProducts(searchTerm, brandFilter);
-        }
-
-        function renderProducts(searchTerm, brandFilter) {
-            searchTerm = searchTerm || '';
-            brandFilter = brandFilter || '';
-            
-            const grid = document.getElementById('productsGrid');
-            const noResults = document.getElementById('noResults');
-            let allProducts = [];
-
-            if (currentCategory === 'Todos') {
-                Object.keys(CATALOG).forEach(catKey => {
-                    CATALOG[catKey].forEach(p => {
-                        allProducts.push({
-                            marca: p.marca,
-                            modelo: p.modelo,
-                            designs: p.designs,
-                            category: catKey
-                        });
-                    });
-                });
-            } else {
-                CATALOG[currentCategory].forEach(p => {
-                    allProducts.push({
-                        marca: p.marca,
-                        modelo: p.modelo,
-                        designs: p.designs,
-                        category: currentCategory
-                    });
-                });
-            }
-
-            allProducts = allProducts.filter(product => {
-                const matchesSearch = product.modelo.toLowerCase().includes(searchTerm);
-                const matchesBrand = !brandFilter || product.marca === brandFilter;
-                return matchesSearch && matchesBrand;
-            });
-
-            if (allProducts.length === 0) {
-                grid.style.display = 'none';
-                noResults.style.display = 'block';
-                return;
-            } else {
-                grid.style.display = 'grid';
-                noResults.style.display = 'none';
-            }
-
-            grid.innerHTML = allProducts.map((product, index) => {
-                const productId = product.category + '-' + product.marca + '-' + product.modelo;
-                const selected = selectedDesigns[productId] || null;
-                
-                let html = '<div class="product-card" style="--i: ' + index + '">';
-                html += '<div class="product-header"><div>';
-                html += '<span class="product-brand">' + product.marca + '</span>';
-                html += '<p class="product-category">' + product.category + '</p>';
-                html += '</div></div>';
-                html += '<h3 class="product-model">' + product.modelo + '</h3>';
-                html += '<div class="designs-section">';
-                html += '<p class="designs-label">📐 Diseños disponibles:</p>';
-                html += '<div class="designs-grid">';
-                
-                product.designs.forEach(design => {
-                    html += '<div class="design-option ' + (selected === design ? 'selected' : '') + '" ';
-                    html += 'onclick="selectDesign(\'' + productId + '\', \'' + design + '\')">';
-                    html += design + '</div>';
-                });
-                
-                html += '</div></div>';
-                html += '<div class="quantity-section">';
-                html += '<span class="quantity-label">Cantidad:</span>';
-                html += '<div class="quantity-controls">';
-                html += '<button class="qty-btn" onclick="changeQty(\'' + productId + '\', -1)">-</button>';
-                html += '<input type="number" class="qty-input" id="qty-' + productId + '" value="1" min="1" max="999">';
-                html += '<button class="qty-btn" onclick="changeQty(\'' + productId + '\', 1)">+</button>';
-                html += '</div></div>';
-                html += '<button class="add-to-cart-btn" onclick="addToCartById(\'' + productId + '\')">➕ Agregar al Carrito</button>';
-                html += '</div>';
-                
-                return html;
-            }).join('');
-        }
-
-        function selectDesign(productId, design) {
-            selectedDesigns[productId] = design;
-            filterProducts();
-        }
-
-        function changeQty(productId, delta) {
-            const input = document.getElementById('qty-' + productId);
-            let newValue = parseInt(input.value) + delta;
-            if (newValue < 1) newValue = 1;
-            if (newValue > 999) newValue = 999;
-            input.value = newValue;
-        }
-
-        function addToCartById(productId) {
-            const parts = productId.split('-');
-            const category = parts[0];
-            const marca = parts[1];
-            const modeloParts = parts.slice(2);
-            const modelo = modeloParts.join('-');
-            
-            let product = null;
-            if (CATALOG[category]) {
-                product = CATALOG[category].find(p => p.marca === marca && p.modelo === modelo);
-            }
-            
-            if (!product) {
-                alert('❌ Producto no encontrado');
-                return;
-            }
-            
-            const design = selectedDesigns[productId];
-            if (!design) {
-                alert('⚠️ Por favor selecciona un diseño');
-                return;
-            }
-
-            const qtyInput = document.getElementById('qty-' + productId);
-            const quantity = parseInt(qtyInput.value);
-
-            const existingItemIndex = cart.findIndex(item => 
-                item.marca === marca && 
-                item.modelo === modelo && 
-                item.category === category &&
-                item.design === design
-            );
-
-            if (existingItemIndex >= 0) {
-                cart[existingItemIndex].quantity += quantity;
-            } else {
-                cart.push({
-                    marca: marca,
-                    modelo: modelo,
-                    category: category,
-                    designs: product.designs,
-                    design: design,
-                    quantity: quantity
-                });
-            }
-
-            updateCartCount();
-            
-            // Reset quantity to 1 after adding
-            qtyInput.value = 1;
-            
-            // NO borramos el diseño seleccionado - se mantiene resaltado
-            
-            const btn = event.target;
-            const originalText = btn.textContent;
-            const originalBg = btn.style.background;
-            btn.textContent = '✅ Agregado!';
-            btn.style.background = 'var(--success)';
-            
-            setTimeout(function() {
-                btn.textContent = originalText;
-                btn.style.background = originalBg;
-            }, 1500);
-        }
-
-        function updateCartCount() {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cartCount').textContent = count;
-        }
-
-        function openCart() {
-            const modal = document.getElementById('cartModal');
-            const content = document.getElementById('cartContent');
-
-            if (cart.length === 0) {
-                content.innerHTML = '<div class="empty-cart"><div class="empty-cart-icon">🛒</div><h3>Tu carrito está vacío</h3><p>Agrega productos para comenzar tu pedido</p></div>';
-            } else {
-                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-                
-                let html = '<div class="cart-items">';
-                cart.forEach((item, index) => {
-                    html += '<div class="cart-item">';
-                    html += '<div class="cart-item-info">';
-                    html += '<span class="cart-item-brand">' + item.marca + '</span>';
-                    html += '<div class="cart-item-model">' + item.modelo + '</div>';
-                    html += '<div class="cart-item-design">Diseño: ' + item.design + '</div>';
-                    html += '<div class="cart-item-category" style="font-size: 0.8em; color: #999;">' + item.category + '</div>';
-                    html += '</div>';
-                    html += '<span class="cart-item-qty">×' + item.quantity + '</span>';
-                    html += '<button class="remove-btn" onclick="removeFromCart(' + index + ')">🗑️</button>';
-                    html += '</div>';
-                });
-                html += '</div>';
-
-                html += '<div class="cart-summary"><div class="cart-total">Total de productos: ' + totalItems + '</div></div>';
-
-                html += '<div class="customer-form">';
-                html += '<h3 style="margin-bottom: 20px; color: var(--dark);">📋 Datos del Cliente</h3>';
-                html += '<div class="form-group"><label>Nombre completo *</label><input type="text" id="customerName" placeholder="Ej: Juan Pérez" required></div>';
-                html += '<div class="form-group"><label>Teléfono *</label><input type="tel" id="customerPhone" placeholder="Ej: 987654321" required></div>';
-                html += '<div class="form-group"><label>Dirección de entrega</label><textarea id="customerAddress" placeholder="Ej: Av. Principal 123, San Isidro"></textarea></div>';
-                html += '<div class="form-group"><label>Notas adicionales</label><textarea id="customerNotes" placeholder="Comentarios o instrucciones especiales..."></textarea></div>';
-                html += '</div>';
-
-                html += '<button class="checkout-btn" onclick="finalizePurchase()">✅ Finalizar Pedido</button>';
-                
-                content.innerHTML = html;
-            }
-
-            modal.classList.add('active');
-        }
-
-        function closeCart() {
-            document.getElementById('cartModal').classList.remove('active');
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartCount();
-            openCart();
-        }
-
-        function finalizePurchase() {
-            const name = document.getElementById('customerName').value.trim();
-            const phone = document.getElementById('customerPhone').value.trim();
-            const address = document.getElementById('customerAddress').value.trim();
-            const notes = document.getElementById('customerNotes').value.trim();
-
-            if (!name || !phone) {
-                alert('⚠️ Por favor completa nombre y teléfono');
-                return;
-            }
-
-            let orderText = '📋 NUEVO PEDIDO - CaseMania\n\n';
-            orderText += '👤 Cliente: ' + name + '\n';
-            orderText += '📱 Teléfono: ' + phone + '\n';
-            if (address) orderText += '📍 Dirección: ' + address + '\n';
-            orderText += '\n━━━━━━━━━━━━━━━━━━━━\n\n';
-            orderText += '🛍️ PRODUCTOS:\n\n';
-
-            cart.forEach((item, index) => {
-                orderText += (index + 1) + '. ' + item.marca + ' ' + item.modelo + '\n';
-                orderText += '   Categoría: ' + item.category + '\n';
-                orderText += '   Diseño: ' + item.design + '\n';
-                orderText += '   Cantidad: ' + item.quantity + '\n\n';
-            });
-
-            orderText += '━━━━━━━━━━━━━━━━━━━━\n\n';
-            orderText += '📊 Total items: ' + cart.reduce((sum, item) => sum + item.quantity, 0) + '\n';
-            
-            if (notes) {
-                orderText += '\n💬 Notas: ' + notes + '\n';
-            }
-
-            window.currentOrder = {
-                name: name,
-                text: orderText
-            };
-
-            const content = document.getElementById('cartContent');
-            let html = '<div class="success-message">';
-            html += '<h2 style="margin-bottom: 15px;">✅ ¡Pedido Registrado!</h2>';
-            html += '<p>Gracias por tu compra, ' + name + '</p>';
-            html += '</div>';
-            html += '<div class="order-summary">';
-            html += '<h3>📋 Resumen del Pedido</h3>';
-            html += '<pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.9em; line-height: 1.6;">' + orderText + '</pre>';
-            html += '</div>';
-            html += '<button class="checkout-btn" onclick="downloadOrder()">📥 Descargar Pedido</button>';
-            html += '<button class="cart-btn" style="margin-top: 15px; width: 100%;" onclick="resetAndClose()">🔄 Nuevo Pedido</button>';
-            
-            content.innerHTML = html;
-        }
-
-        function downloadOrder() {
-            if (!window.currentOrder) return;
-            
-            const blob = new Blob([window.currentOrder.text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const fileName = 'Pedido_' + window.currentOrder.name.replace(/\s/g, '_') + '_' + new Date().toLocaleDateString('es-PE').replace(/\//g, '-') + '.txt';
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function resetAndClose() {
-            cart = [];
-            selectedDesigns = {};
-            window.currentOrder = null;
-            updateCartCount();
-            closeCart();
-            filterProducts();
-        }
-
-        document.getElementById('cartModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCart();
-            }
-        });
-
-        init();
-    </script>
+<header>
+<div class="header-content">
+<h1><span class="logo-icon">HR</span>HR ACCESORIOS</h1>
+<button class="cart-btn" onclick="openCart()">
+🛒 Carrito
+<span class="cart-count" id="cartCount">0</span>
+</button>
+</div>
+</header>
+<div class="container">
+<div class="search-section">
+<div class="search-bar">
+<input type="text" id="searchInput" placeholder="🔍 Buscar por modelo..." onkeyup="filterProducts()">
+<select id="brandFilter" onchange="filterProducts()">
+<option value="">📱 Todas las marcas</option>
+<option value="SAMSUNG">Samsung</option>
+<option value="XIAOMI">Xiaomi</option>
+<option value="HONOR">Honor</option>
+<option value="IPHONE">iPhone</option>
+<option value="MOTOROLA">Motorola</option>
+<option value="INFINIX">Infinix</option>
+<option value="TECNO">Tecno</option>
+<option value="ZTE">ZTE</option>
+</select>
+</div>
+</div>
+<div class="category-tabs" id="categoryTabs"></div>
+<div class="products-grid" id="productsGrid"></div>
+<div class="no-results" id="noResults" style="display:none">
+<div class="no-results-icon">😕</div>
+<h3>No se encontraron productos</h3>
+<p>Intenta con otra búsqueda o categoría</p>
+</div>
+</div>
+<div class="modal" id="cartModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2 class="modal-title">🛒 Mi Carrito</h2>
+<button class="close-btn" onclick="closeCart()">×</button>
+</div>
+<div id="cartContent"></div>
+</div>
+</div>
+<script>
+const CATALOG={"360 MARIPOSA MUJER":[{"marca":"SAMSUNG","modelo":"A06 4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"A16","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"A17/A26","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"A23 4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"A36/A56","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"S22 ULTRA","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"S23 ULTRA","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"S24ULTRA/S25 ULTRA","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"SAMSUNG","modelo":"S25 FE","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"REDMI A5 4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"REDMI 14C /REDMI A4 5G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"NOTE 10 PRO  4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"NOTE 11 PRO 2022","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"NOTE 13 PRO 4G/ NOTE 14S/POCO M6 PRO 4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"NOTE 14 4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"NOTE 14 5G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"XIAOMI","modelo":"NOTE 14 PRO 5G / NOTE 14 PRO PLUS 5G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"X6A 4G/X6A PLUS/X6S 4G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"X6C","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"X7C/X6B 5G/HN 200 SMART","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"X8C","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"X9C/MAGIC 7 LITE/HN X60 PRO 5G","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"X9C SMART","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"MAGIC 6 PRO","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"HONOR","modelo":"400 LITE","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"TECNO","modelo":"SPARK GO 2023","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]},{"marca":"ZTE","modelo":"BLADE A35/A55","designs":["MORADO OSCURO","AZUL","ROSADO","BLANCO","MORADO CLARO","VERDE"]}],"360 MUJER":[{"marca":"SAMSUNG","modelo":"A06 4G","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A07","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A11","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A12","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A13 4G/5G/A32 5G/A04/A04S","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A14","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A15","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A16","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A17/A26","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A21S","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A22 4G","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A31","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A32","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A51","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A52","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A54","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A55","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"SAMSUNG","modelo":"A56/A36","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"RM A3","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"RM A5","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"RM 9C/10A","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"RM 13C","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"RM 14C/RA4","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"RM 15C","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"NOTE 9","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"NOTE 10 PRO","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"NOTE 11 4G/11S/ 12S","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"NOTE 13 PRO 4G/ NOTE 14S","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"NOTE 14 4G","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]},{"marca":"XIAOMI","modelo":"NOTE 14 PRO/ NOTE 14 PRO PLUS","designs":["F.MORADO","FLORECITAS","MARIPOSA","CORBATA","GATO","NIÑA"]}],"360 HOMBRE":[{"marca":"SAMSUNG","modelo":"A06 4G","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A07","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A11","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A12","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A13 4G/5G/A32 5G/A04/A04S","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A14","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A15","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A16","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A17/A26","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A21S","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A22 4G","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A23","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A31","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A32","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A51","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A52","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A54","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A55","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"A56/A36","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"S22 ULTRA","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"S23 ULTRA","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"S24 ULTRA/S25 ULTRA","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"SAMSUNG","modelo":"S25 FE","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"RM A3","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"RM A5","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"RM 9C/10A","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"RM 13C","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"RM 14C/RA4","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"REDMI 15C","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 9","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 10 PRO","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 11 PRO","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 11 4G/11S/ 12S","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 13 PRO 4G/ NOTE 14S","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 14 4G","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 14 5G","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]},{"marca":"XIAOMI","modelo":"NOTE 14 PRO/ NOTE 14 PRO PLUS","designs":["C.ROJO","C.NEGRO","C.BLANCO","STAR WARS","MORTAL COMBAT","THUNDERCATS","C.AZUL","DG","M.COLORES","M.NEGRA"]}],"MAGSAFE":[{"marca":"SAMSUNG","modelo":"S24","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"SAMSUNG","modelo":"S24 FE","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"SAMSUNG","modelo":"S24 PLUS","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"SAMSUNG","modelo":"S25","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"SAMSUNG","modelo":"S25 PLUS","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"SAMSUNG","modelo":"S24 ULTRA S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"SAMSUNG","modelo":"S25 ULTRA S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 11","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 11 PRO MAX","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 12 PRO MAX","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 13 PRO MAX","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 13 PRO S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 14 PRO S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 14 PRO MAX","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 15/14/13","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 15 PRO MAX","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 16 S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 16 PRO","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 16 PRO MAX","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 17 S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 17 PRO S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 17 AIR S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]},{"marca":"IPHONE","modelo":"IPH 17 PRO MAX S/M","designs":["NEGRO","AZUL","MORADO","MARRON","ROSADO","VERDE","GRIS","CELESTE","NARANJA","BLANCO"]}],"SILICONE":[{"marca":"SAMSUNG","modelo":"A07","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"SAMSUNG","modelo":"A17","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"SAMSUNG","modelo":"A26","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"SAMSUNG","modelo":"A55","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"SAMSUNG","modelo":"A36/A56","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X5B","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X6","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X6A","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X6B 4G","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X6C","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X7A","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X7B","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X7C","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X8A","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X8B","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X8C","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"HONOR","modelo":"X9C/MAGIC 7 LITE","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"INFINIX","modelo":"SMART 10","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"INFINIX","modelo":"GT 30 PRO 4G","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"MOTOROLA","modelo":"G05","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"MOTOROLA","modelo":"G15","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"MOTOROLA","modelo":"G56","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"MOTOROLA","modelo":"G86","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"NOTE 11 PRO 4G","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"NOTE 13 4G","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"NOTE 13 PRO 4G/NOTE 14 S","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"NOTE 14 4G","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"NOTE 14 PRO 4G","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"NOTE 14 PRO PLUS","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"POCO X3","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"REDMI A5","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"REDMI 13C","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"XIAOMI","modelo":"REDMI 14C/RM A4","designs":["NEGRO","AZUL","LILA","PALO ROSA"]},{"marca":"ZTE","modelo":"ZTE A35/A55","designs":["NEGRO","AZUL","LILA","PALO ROSA"]}]};
+let currentCategory='Todos',cart=[],selectedDesigns={};
+function init(){renderCategoryTabs();renderProducts();updateCartCount()}
+function renderCategoryTabs(){const t=document.getElementById('categoryTabs'),c=['Todos',...Object.keys(CATALOG)];t.innerHTML=c.map(e=>'<button class="category-tab '+(e===currentCategory?'active':'')+'" onclick="selectCategory(\''+e+'\')">'+e+'</button>').join('')}
+function selectCategory(c){currentCategory=c;renderCategoryTabs();filterProducts()}
+function filterProducts(){const s=document.getElementById('searchInput').value.toLowerCase(),b=document.getElementById('brandFilter').value;renderProducts(s,b)}
+function renderProducts(s,b){s=s||'';b=b||'';const g=document.getElementById('productsGrid'),n=document.getElementById('noResults');let a=[];if(currentCategory==='Todos'){Object.keys(CATALOG).forEach(k=>{CATALOG[k].forEach(p=>{a.push({marca:p.marca,modelo:p.modelo,designs:p.designs,category:k})})})}else{CATALOG[currentCategory].forEach(p=>{a.push({marca:p.marca,modelo:p.modelo,designs:p.designs,category:currentCategory})})}
+a=a.filter(p=>{const m=p.modelo.toLowerCase().includes(s),br=!b||p.marca===b;return m&&br});if(a.length===0){g.style.display='none';n.style.display='block';return}else{g.style.display='grid';n.style.display='none'}
+g.innerHTML=a.map((p,i)=>{const id=p.category+'-'+p.marca+'-'+p.modelo,sel=selectedDesigns[id]||null;let h='<div class="product-card" style="--i:'+i+'"><div class="product-header"><div><span class="product-brand">'+p.marca+'</span><p class="product-category">'+p.category+'</p></div></div><h3 class="product-model">'+p.modelo+'</h3><div class="designs-section"><p class="designs-label">Diseños disponibles:</p><div class="designs-grid">';p.designs.forEach(d=>{h+='<div class="design-option '+(sel===d?'selected':'')+'" onclick="selectDesign(\''+id+'\',\''+d+'\')">'+d+'</div>'});h+='</div></div><div class="quantity-section"><span class="quantity-label">Cantidad:</span><div class="quantity-controls"><button class="qty-btn" onclick="changeQty(\''+id+'\',-1)">-</button><input type="number" class="qty-input" id="qty-'+id+'" value="1" min="1" max="999"><button class="qty-btn" onclick="changeQty(\''+id+'\',1)">+</button></div></div><button class="add-to-cart-btn" onclick="addToCartById(\''+id+'\')">➕ Agregar al Carrito</button></div>';return h}).join('')}
+function selectDesign(id,d){selectedDesigns[id]=d;filterProducts()}
+function changeQty(id,delta){const inp=document.getElementById('qty-'+id);let v=parseInt(inp.value)+delta;if(v<1)v=1;if(v>999)v=999;inp.value=v}
+function addToCartById(id){const parts=id.split('-'),cat=parts[0],marca=parts[1],modelo=parts.slice(2).join('-');let prod=null;if(CATALOG[cat]){prod=CATALOG[cat].find(p=>p.marca===marca&&p.modelo===modelo)}
+if(!prod){alert('❌ Producto no encontrado');return}
+const design=selectedDesigns[id];if(!design){alert('⚠️ Por favor selecciona un diseño');return}
+const qtyInp=document.getElementById('qty-'+id),qty=parseInt(qtyInp.value),existIdx=cart.findIndex(i=>i.marca===marca&&i.modelo===modelo&&i.category===cat&&i.design===design);if(existIdx>=0){cart[existIdx].quantity+=qty}else{cart.push({marca:marca,modelo:modelo,category:cat,designs:prod.designs,design:design,quantity:qty})}
+updateCartCount();qtyInp.value=1;const btn=event.target,origT=btn.textContent,origBg=btn.style.background;btn.textContent='✅ Agregado!';btn.style.background='var(--success)';setTimeout(()=>{btn.textContent=origT;btn.style.background=origBg},1500)}
+function updateCartCount(){const c=cart.reduce((s,i)=>s+i.quantity,0);document.getElementById('cartCount').textContent=c}
+function openCart(){const m=document.getElementById('cartModal'),c=document.getElementById('cartContent');if(cart.length===0){c.innerHTML='<div class="empty-cart"><div class="empty-cart-icon">🛒</div><h3>Tu carrito está vacío</h3><p>Agrega productos para comenzar tu pedido</p></div>'}else{const tot=cart.reduce((s,i)=>s+i.quantity,0);let h='<div class="cart-items">';cart.forEach((i,idx)=>{h+='<div class="cart-item"><div class="cart-item-info"><span class="cart-item-brand">'+i.marca+'</span><div class="cart-item-model">'+i.modelo+'</div><div class="cart-item-design">Diseño: '+i.design+'</div><div class="cart-item-category" style="font-size:.8em;color:var(--gray)">'+i.category+'</div></div><span class="cart-item-qty">×'+i.quantity+'</span><button class="remove-btn" onclick="removeFromCart('+idx+')">🗑️</button></div>'});h+='</div><div class="cart-summary"><div class="cart-total">Total: '+tot+' productos</div></div><div class="customer-form"><h3 style="margin-bottom:18px;color:var(--dark);font-weight:700">📋 Datos del Cliente</h3><div class="form-group"><label>Nombre completo *</label><input type="text" id="customerName" placeholder="Ej: Juan Pérez" required></div><div class="form-group"><label>Teléfono *</label><input type="tel" id="customerPhone" placeholder="Ej: 987654321" required></div><div class="form-group"><label>Dirección de entrega</label><textarea id="customerAddress" placeholder="Ej: Av. Principal 123, San Isidro"></textarea></div><div class="form-group"><label>Notas adicionales</label><textarea id="customerNotes" placeholder="Comentarios o instrucciones especiales..."></textarea></div></div><button class="checkout-btn" onclick="finalizePurchase()">✅ Finalizar Pedido</button>';c.innerHTML=h}
+m.classList.add('active')}
+function closeCart(){document.getElementById('cartModal').classList.remove('active')}
+function removeFromCart(i){cart.splice(i,1);updateCartCount();openCart()}
+function finalizePurchase(){const n=document.getElementById('customerName').value.trim(),p=document.getElementById('customerPhone').value.trim(),a=document.getElementById('customerAddress').value.trim(),nt=document.getElementById('customerNotes').value.trim();if(!n||!p){alert('⚠️ Por favor completa nombre y teléfono');return}
+let o='📋 NUEVO PEDIDO - HR ACCESORIOS\n\n👤 Cliente: '+n+'\n📱 Teléfono: '+p+'\n';if(a)o+='📍 Dirección: '+a+'\n';o+='\n━━━━━━━━━━━━━━━━━━━━\n\n🛍️ PRODUCTOS:\n\n';cart.forEach((i,idx)=>{o+=(idx+1)+'. '+i.marca+' '+i.modelo+'\n   Categoría: '+i.category+'\n   Diseño: '+i.design+'\n   Cantidad: '+i.quantity+'\n\n'});o+='━━━━━━━━━━━━━━━━━━━━\n\n📊 Total: '+cart.reduce((s,i)=>s+i.quantity,0)+' productos\n';if(nt)o+='\n💬 Notas: '+nt+'\n';window.currentOrder={name:n,text:o};const c=document.getElementById('cartContent');let h='<div class="success-message"><h2 style="margin-bottom:12px">✅ ¡Pedido Registrado!</h2><p>Gracias por tu compra, '+n+'</p></div><div class="order-summary"><h3>📋 Resumen del Pedido</h3><pre style="white-space:pre-wrap;font-family:monospace;font-size:.85em;line-height:1.6">'+o+'</pre></div><button class="checkout-btn" onclick="downloadOrder()">📥 Descargar Pedido</button><button class="cart-btn" style="margin-top:12px;width:100%" onclick="resetAndClose()">🔄 Nuevo Pedido</button>';c.innerHTML=h}
+function downloadOrder(){if(!window.currentOrder)return;const b=new Blob([window.currentOrder.text],{type:'text/plain'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='Pedido_'+window.currentOrder.name.replace(/\s/g,'_')+'_'+new Date().toLocaleDateString('es-PE').replace(/\//g,'-')+'.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
+function resetAndClose(){cart=[];selectedDesigns={};window.currentOrder=null;updateCartCount();closeCart();filterProducts()}
+document.getElementById('cartModal').addEventListener('click',e=>{if(e.target===document.getElementById('cartModal'))closeCart()});
+init();
+</script>
 </body>
 </html>
